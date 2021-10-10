@@ -45,7 +45,7 @@ public class Pathfinder : MonoBehaviour {
         this.endNode = endNode;
         path.Add(startNode);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             if (nearest == endNode) {
                 Debug.Log("Pathfinder found the path node!", nearest);
                 yield break;

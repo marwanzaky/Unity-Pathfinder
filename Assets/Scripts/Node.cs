@@ -30,7 +30,8 @@ public class Node : MonoBehaviour {
             el.Calc();
 
         foreach (var el in neighbors)
-            if (nearest == null || nearest.hCost > el.hCost)
+            if (nearest == null ||
+            nearest.hCost > el.hCost)
                 nearest = el;
 
         nearest.debugText.color = Color.green;
@@ -45,12 +46,7 @@ public class Node : MonoBehaviour {
             Vector3.forward,
             Vector3.back,
             Vector3.right,
-            Vector3.left,
-
-            Vector3.forward + Vector3.left,
-            Vector3.forward + Vector3.right,
-            Vector3.back + Vector3.left,
-            Vector3.back + Vector3.right
+            Vector3.left
         };
 
         var nodes = new List<Node>();
