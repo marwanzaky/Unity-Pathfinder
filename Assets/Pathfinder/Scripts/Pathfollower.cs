@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PathFollower : MonoBehaviour {
+public class Pathfollower : MonoBehaviour {
     [SerializeField] float speed = 3f;
 
     public void FollowPath(Node[] nodes) {

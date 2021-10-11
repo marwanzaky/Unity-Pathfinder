@@ -952,7 +952,7 @@ MonoBehaviour:
   nodeMask:
     serializedVersion: 2
     m_Bits: 64
-  follower: {fileID: 166882788}
+  pathfollower: {fileID: 166882788}
 --- !u!1001 &703972308
 PrefabInstance:
   m_ObjectHideFlags: 0

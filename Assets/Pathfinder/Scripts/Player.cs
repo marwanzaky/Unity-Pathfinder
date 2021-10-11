@@ -2,10 +2,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
+    const float MAX_DIS = 1000f;
+    const bool DEBUG = true;
+
     Camera cam;
 
     [SerializeField] LayerMask nodeMask;
-    [SerializeField] PathFollower follower;
+    [SerializeField] Pathfollower pathfollower;
 
     void Start() {
         cam = Camera.main;
@@ -16,20 +19,21 @@ public class Player : MonoBehaviour {
             SelectEndNode();
 
         if (Input.GetKeyDown(KeyCode.R))
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Restart();
     }
 
     void SelectEndNode() {
-        const float MAX_DIS = 1000f;
-        const bool DEBUG = true;
-
         var ray = cam.ScreenPointToRay(Input.mousePosition);
         var hit = RaycastHitX.Cast(ray.origin, ray.direction, nodeMask, MAX_DIS, DEBUG);
 
         if (hit.collider) {
             var node = hit.collider.GetComponent<Node>();
             var path = Pathfinder.Instance.FindPath(node);
-            follower.FollowPath(path);
+            pathfollower.FollowPath(path);
         } else { Debug.LogWarning("We didn't find any node at this mouse position"); }
+    }
+
+    void Restart() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
