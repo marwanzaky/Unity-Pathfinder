@@ -4,6 +4,7 @@ public class Player : MonoBehaviour {
     Camera cam;
 
     [SerializeField] LayerMask nodeMask;
+    [SerializeField] PathFollower follower;
 
     void Start() {
         cam = Camera.main;
@@ -23,7 +24,8 @@ public class Player : MonoBehaviour {
 
         if (hit.collider) {
             var node = hit.collider.GetComponent<Node>();
-            Pathfinder.Instance.FindPath(node);
+            var path = Pathfinder.Instance.FindPath(node);
+            follower.FollowPath(path);
         } else { Debug.LogWarning("We didn't find any node at this mouse position"); }
     }
 }
