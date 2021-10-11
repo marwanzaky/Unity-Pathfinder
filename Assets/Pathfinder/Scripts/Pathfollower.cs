@@ -1,25 +1,46 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Pathfollower : MonoBehaviour {
+    Player Player => Player.Instance;
+
+    public static Action onArrive;
+
     [SerializeField] float speed = 3f;
 
-    public void FollowPath(Node[] nodes) {
-        StartCoroutine(FollowPathIE(nodes));
+    public IEnumerator FollowPath() {
+        var i = 0;
+        var path = Pathfinder.Instance.FindPath();
+
+        if (path.Length > 0) {
+            while (i < path.Length) {
+                transform.position = Vector3.MoveTowards(transform.position, NodePos(), speed * Time.deltaTime);
+
+                if (transform.position == NodePos())
+                    i++;
+
+                yield return null;
+            }
+
+            onArrive?.Invoke();
+        } else { Debug.LogError("Error: Cannot follow the path 'null'"); }
+
+        Vector3 NodePos() => Vector3X.IgnoreY(path[i].transform.position, transform.position.y);
     }
 
-    IEnumerator FollowPathIE(Node[] nodes) {
-        var i = 0;
+    public Node GetCurrentNode() {
+        const float MAX_DIS = 1f;
+        const bool DEBUG = true;
+        var hit = RaycastHitX.Cast(transform.position, Vector3.down, Player.layers.Node, MAX_DIS, DEBUG);
 
-        while (i < nodes.Length) {
-            transform.position = Vector3.MoveTowards(transform.position, NodePos(), speed * Time.deltaTime);
-
-            if (transform.position == NodePos())
-                i++;
-
-            yield return null;
+        if (hit.collider) {
+            var node = hit.collider.GetComponent<Node>();
+            Debug.LogWarning("Get current node", node.gameObject);
+            return node;
         }
 
-        Vector3 NodePos() => Vector3X.IgnoreY(nodes[i].transform.position, transform.position.y);
+        Debug.LogWarning("Current node NOT found!");
+        return null;
     }
 }

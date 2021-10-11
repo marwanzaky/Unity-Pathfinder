@@ -17,25 +17,41 @@ public class Pathfinder : MonoBehaviour {
     [SerializeField] Node startNode;
     [SerializeField] Node endNode;
 
-    public Node StartNode => startNode;
-    public Node EndNode => endNode;
+    public Node StartNode {
+        get => startNode;
+        set => startNode = value;
+    }
+
+    public Node EndNode {
+        get => endNode;
+        set => endNode = value;
+    }
 
     void Start() {
         startNode.Calc();
     }
 
-    public Node[] FindPath(Node endNode) {
+    public Node[] FindPath() {
+        // Check requirements first before running this algoristh.
+        if (StartNode == null || EndNode == null) {
+            Debug.LogError("Please select missing nodes before running the pathfinder");
+            return null;
+        }
+
         const int MAX_TRIES = 1000;
 
         var path = new List<Node>();
         var nearest = startNode;
 
-        this.endNode = endNode;
         AddPath(startNode);
 
         for (int i = 0; i < MAX_TRIES; i++) {
             if (nearest == endNode) {
                 Debug.Log($"Pathfinder found the path node 'tries:{i + 1}'", nearest);
+
+                foreach (var el in path)
+                    el.col.enabled = true;
+
                 return path.ToArray();
             }
 

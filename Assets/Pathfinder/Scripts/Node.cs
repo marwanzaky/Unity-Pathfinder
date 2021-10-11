@@ -2,12 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 
-public enum Walkable {
-    Yes, No
-}
-
 public class Node : MonoBehaviour {
     Pathfinder Pathfinder => Pathfinder.Instance;
+    Player Player => Player.Instance;
 
     const float NODE_SIZE = 1;
 
@@ -15,11 +12,34 @@ public class Node : MonoBehaviour {
     float hCost = 0;  // distance from end node
     float fCost = 0;  // g_cost + f_cost
 
-    [SerializeField] Walkable walkable = Walkable.Yes;
-    [SerializeField] LayerMask nodeMask;
+    [HideInInspector] public Collider col;
+
+    [SerializeField] LayerMask layerObstacles;
+    [SerializeField] LayerMask layerNode;
     [SerializeField] TextMeshPro debugText;
 
     public Vector3 Pos => transform.position;
+
+    void Start() {
+        col = GetComponent<Collider>();
+
+        Pathfollower.onArrive += SetDefault;
+    }
+
+    void OnDisable() {
+        Pathfollower.onArrive -= SetDefault;
+    }
+
+    public bool IsWalkable {
+        get {
+            const float MAX_DIS = 1f;
+            const bool DEBUG = true;
+            var hit = RaycastHitX.Cast(transform.position, Vector3.up, layerObstacles, MAX_DIS, DEBUG);
+            var res = hit.collider == null;
+            Debug.Log("This node is " + (res ? "walkable" : "NOT walk able"), gameObject);
+            return res;
+        }
+    }
 
     public void Calc() {
         var nodesPos = (startNode: Pathfinder.StartNode.Pos,
@@ -54,7 +74,7 @@ public class Node : MonoBehaviour {
             }
         }
 
-        Debug.Log("Nearest node found", nearest.gameObject);
+        Debug.Log($"Nearest node is {(nearest == null ? "Not found!" : "found")} ", nearest.gameObject);
 
         return nearest;
     }
@@ -73,12 +93,12 @@ public class Node : MonoBehaviour {
         List<Node> nodes = new List<Node>();
 
         foreach (var el in nodeVectors) {
-            var nodeHit = RaycastHitX.Cast(transform.position, el, nodeMask, NODE_SIZE, DEBUG);
+            var nodeHit = RaycastHitX.Cast(transform.position, el, Player.layers.Node, NODE_SIZE, DEBUG);
 
             if (nodeHit.collider) {
                 var node = nodeHit.collider.GetComponent<Node>();
 
-                if (node.walkable == Walkable.Yes) {
+                if (node.IsWalkable) {
                     nodeHits.Add(nodeHit);
                     nodeHit.collider.enabled = false;
                     nodes.Add(node);
@@ -88,6 +108,7 @@ public class Node : MonoBehaviour {
 
         foreach (var el in nodeHits) {
             el.collider.enabled = true;
+            Debug.Log("Turned back on collider", el.collider.gameObject);
         }
 
         Debug.Log($"This node has {nodes.Count} neighbors", this);
@@ -98,6 +119,14 @@ public class Node : MonoBehaviour {
     public void MarkAsVisited() {
         if (debugText)
             debugText.color = Color.red;
-        GetComponent<Collider>().enabled = false;
+
+        col.enabled = false;
+    }
+
+    void SetDefault() {
+        if (debugText) {
+            debugText.text = "";
+            debugText.color = Color.white;
+        }
     }
 }
