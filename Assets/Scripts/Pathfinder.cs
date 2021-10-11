@@ -25,7 +25,7 @@ public class Pathfinder : MonoBehaviour {
     }
 
     public Node[] FindPath(Node endNode) {
-        const int MAX_TRIES = 300;
+        const int MAX_TRIES = 1000;
 
         var path = new List<Node>();
         var nearest = startNode;
@@ -35,7 +35,7 @@ public class Pathfinder : MonoBehaviour {
 
         for (int i = 0; i < MAX_TRIES; i++) {
             if (nearest == endNode) {
-                Debug.Log("Pathfinder found the path node!", nearest);
+                Debug.Log($"Pathfinder found the path node 'tries:{i + 1}'", nearest);
                 return path.ToArray();
             }
 
