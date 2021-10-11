@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
     Camera cam;
@@ -13,6 +14,9 @@ public class Player : MonoBehaviour {
     void Update() {
         if (Input.GetMouseButtonDown(0))
             SelectEndNode();
+
+        if (Input.GetKeyDown(KeyCode.R))
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void SelectEndNode() {

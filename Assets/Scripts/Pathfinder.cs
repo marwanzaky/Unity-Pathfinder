@@ -25,7 +25,7 @@ public class Pathfinder : MonoBehaviour {
     }
 
     public Node[] FindPath(Node endNode) {
-        const int MAX_TRIES = 100;
+        const int MAX_TRIES = 300;
 
         var path = new List<Node>();
         var nearest = startNode;

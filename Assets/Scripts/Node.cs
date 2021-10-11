@@ -40,9 +40,14 @@ public class Node : MonoBehaviour {
             el.Calc();
 
         // Find nearest neighbor node
-        foreach (var el in neighbors)
-            if (nearest.fCost > el.fCost)
+        foreach (var el in neighbors) {
+            if (nearest.fCost == el.fCost) {
+                if (nearest.hCost > el.hCost)
+                    nearest = el;
+            } else if (nearest.fCost > el.fCost) {
                 nearest = el;
+            }
+        }
 
         Debug.Log("Nearest node found", nearest.gameObject);
 
