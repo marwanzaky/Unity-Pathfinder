@@ -5,11 +5,14 @@ using System;
 public class Pathfollower : MonoBehaviour {
     Player Player => Player.Instance;
 
-    public static Action onArrive;
+    public static Action OnArrive;
+    public static bool IsTravelling { get; set; }
 
     [SerializeField] float speed = 3f;
 
     public IEnumerator FollowPath() {
+        IsTravelling = true;
+
         var i = 0;
         var path = Pathfinder.Instance.FindPath();
 
@@ -23,7 +26,8 @@ public class Pathfollower : MonoBehaviour {
                 yield return null;
             }
 
-            onArrive?.Invoke();
+            IsTravelling = false;
+            OnArrive?.Invoke();
         } else { Debug.LogError("Error: Cannot follow the path 'null'"); }
 
         Vector3 NodePos() => Vector3X.IgnoreY(path[i].transform.position, transform.position.y);

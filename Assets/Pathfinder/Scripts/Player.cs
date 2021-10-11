@@ -30,11 +30,11 @@ public class Player : MonoBehaviour {
     void Start() {
         cam = Camera.main;
 
-        Pathfollower.onArrive += GetCurrentNode;
+        Pathfollower.OnArrive += GetCurrentNode;
     }
 
     void Update() {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !Pathfollower.IsTravelling)
             Select();
 
         if (Input.GetKeyDown(KeyCode.R))

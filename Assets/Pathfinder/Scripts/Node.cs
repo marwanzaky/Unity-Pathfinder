@@ -23,11 +23,11 @@ public class Node : MonoBehaviour {
     void Start() {
         col = GetComponent<Collider>();
 
-        Pathfollower.onArrive += SetDefault;
+        Pathfollower.OnArrive += SetDefault;
     }
 
     void OnDisable() {
-        Pathfollower.onArrive -= SetDefault;
+        Pathfollower.OnArrive -= SetDefault;
     }
 
     public bool IsWalkable {
