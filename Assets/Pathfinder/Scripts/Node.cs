@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
-using System.Linq;
+
+public enum Walkable {
+    Yes, No
+}
 
 public class Node : MonoBehaviour {
     Pathfinder Pathfinder => Pathfinder.Instance;
@@ -12,6 +15,7 @@ public class Node : MonoBehaviour {
     float hCost = 0;  // distance from end node
     float fCost = 0;  // g_cost + f_cost
 
+    [SerializeField] Walkable walkable = Walkable.Yes;
     [SerializeField] LayerMask nodeMask;
     [SerializeField] TextMeshPro debugText;
 
@@ -36,8 +40,9 @@ public class Node : MonoBehaviour {
         var nearest = neighbors[0];     // default node value
 
         // Calc neighbor nodes
-        foreach (var el in neighbors)
+        foreach (var el in neighbors) {
             el.Calc();
+        }
 
         // Find nearest neighbor node
         foreach (var el in neighbors) {
@@ -57,24 +62,27 @@ public class Node : MonoBehaviour {
     Node[] FindNeighbors() {
         const bool DEBUG = true;
 
-        var nodeVectors = new Vector3[] {
+        Vector3[] nodeVectors = new Vector3[] {
             Vector3.forward,
             Vector3.back,
             Vector3.right,
             Vector3.left
         };
 
-        var nodeHits = new List<RaycastHit>();
-        var nodes = new List<Node>();
+        List<RaycastHit> nodeHits = new List<RaycastHit>();
+        List<Node> nodes = new List<Node>();
 
         foreach (var el in nodeVectors) {
             var nodeHit = RaycastHitX.Cast(transform.position, el, nodeMask, NODE_SIZE, DEBUG);
 
             if (nodeHit.collider) {
                 var node = nodeHit.collider.GetComponent<Node>();
-                nodeHits.Add(nodeHit);
-                nodeHit.collider.enabled = false;
-                nodes.Add(node);
+
+                if (node.walkable == Walkable.Yes) {
+                    nodeHits.Add(nodeHit);
+                    nodeHit.collider.enabled = false;
+                    nodes.Add(node);
+                }
             }
         }
 
@@ -88,7 +96,8 @@ public class Node : MonoBehaviour {
     }
 
     public void MarkAsVisited() {
-        debugText.color = Color.red;
+        if (debugText)
+            debugText.color = Color.red;
         GetComponent<Collider>().enabled = false;
     }
 }
