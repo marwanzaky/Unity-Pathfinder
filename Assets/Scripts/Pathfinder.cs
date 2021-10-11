@@ -20,21 +20,35 @@ public class Pathfinder : MonoBehaviour {
     public Node StartNode => startNode;
     public Node EndNode => endNode;
 
+    void Start() {
+        startNode.Calc();
+    }
+
     public Node[] FindPath(Node endNode) {
+        const int MAX_TRIES = 100;
+
         var path = new List<Node>();
         var nearest = startNode;
 
         this.endNode = endNode;
-        path.Add(startNode);
+        AddPath(startNode);
 
-        while (true) {
+        for (int i = 0; i < MAX_TRIES; i++) {
             if (nearest == endNode) {
                 Debug.Log("Pathfinder found the path node!", nearest);
                 return path.ToArray();
             }
 
             nearest = nearest.FindNearestNode();
-            path.Add(nearest);
+            AddPath(nearest);
         }
+
+        void AddPath(Node node) {
+            path.Add(node);
+            node.MarkAsVisited();
+        }
+
+        return null;
     }
+
 }

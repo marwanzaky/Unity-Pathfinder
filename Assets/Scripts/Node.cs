@@ -32,8 +32,8 @@ public class Node : MonoBehaviour {
     }
 
     public Node FindNearestNode() {
-        var nearest = null as Node;
         var neighbors = FindNeighbors();
+        var nearest = neighbors[0];     // default node value
 
         // Calc neighbor nodes
         foreach (var el in neighbors)
@@ -41,8 +41,10 @@ public class Node : MonoBehaviour {
 
         // Find nearest neighbor node
         foreach (var el in neighbors)
-            if (nearest == null || nearest.hCost > el.hCost)
+            if (nearest.fCost > el.fCost)
                 nearest = el;
+
+        Debug.Log("Nearest node found", nearest.gameObject);
 
         return nearest;
     }
@@ -57,6 +59,7 @@ public class Node : MonoBehaviour {
             Vector3.left
         };
 
+        var nodeHits = new List<RaycastHit>();
         var nodes = new List<Node>();
 
         foreach (var el in nodeVectors) {
@@ -64,13 +67,23 @@ public class Node : MonoBehaviour {
 
             if (nodeHit.collider) {
                 var node = nodeHit.collider.GetComponent<Node>();
+                nodeHits.Add(nodeHit);
                 nodeHit.collider.enabled = false;
                 nodes.Add(node);
             }
         }
 
+        foreach (var el in nodeHits) {
+            el.collider.enabled = true;
+        }
+
         Debug.Log($"This node has {nodes.Count} neighbors", this);
 
         return nodes.ToArray();
+    }
+
+    public void MarkAsVisited() {
+        debugText.color = Color.red;
+        GetComponent<Collider>().enabled = false;
     }
 }
