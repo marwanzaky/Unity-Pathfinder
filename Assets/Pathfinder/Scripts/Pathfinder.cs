@@ -14,8 +14,8 @@ public class Pathfinder : MonoBehaviour {
 
     #endregion
 
-    [HideInInspector] Node startNode;
-    [HideInInspector] Node endNode;
+    [SerializeField] Node startNode;
+    Node endNode;
 
     public Node StartNode {
         get => startNode;
