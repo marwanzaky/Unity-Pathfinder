@@ -27,10 +27,6 @@ public class Pathfinder : MonoBehaviour {
         set => endNode = value;
     }
 
-    void Start() {
-        startNode.Calc();
-    }
-
     public Node[] FindPath() {
         // Check requirements first before running this algoristh.
         if (StartNode == null || EndNode == null) {
