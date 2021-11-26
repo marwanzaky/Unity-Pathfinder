@@ -1,3 +1,3 @@
 # Unity-Pathfinder
 
-Unity Pathfinder Library
+Unity Pathfinder
